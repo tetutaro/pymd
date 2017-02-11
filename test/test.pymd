@@ -1,0 +1,262 @@
+---
+title: pymd-knit test (Python Markdown)
+author: まるやま
+date: \jtoday
+---
+
+# echoテスト
+
+```{Python echo=False}
+%matplotlib inline
+import matplotlib.pyplot as plt
+from pylab import *
+import seaborn as sns
+sns.set(font=['TakaoPGothic'], font_scale=1.5)
+import numpy as np
+import pandas as pd
+```
+
+* コードが隠される
+* 何も出力がない場合
+
+# caption, label, name
+
+caption
+: コード・結果・画像・テーブルに付ける名前。
+結果のPrefixには"Result of"が付く。
+
+label
+: 文章中で参照するための名前。
+コードには"code:"、結果には"block:"、画像には"fig:"、テーブルには "tbl:"というPrefixが付く。
+labelはあるがcaptionが無い場合には、参照の為にlabelがcaptionとなる。（画像を除く）
+
+name
+: 画像を保存する際のファイル名。
+labelはあるがcaptionが無い場合に、nameがあればnameが優先される。
+
+\clearpage
+
+# テキスト出力：label,captionテスト
+
+## テキスト出力のみ
+
+* コードは小さなフォントで黒背景・色付き
+* 結果はブロック内に
+* シンプルな外見
+
+```{python}
+teststr1 = 'hogehoge'
+print(teststr1)
+```
+
+## label付き
+
+* コードへの参照 $\rightarrow$ [@code:test1]
+* 結果への参照 $\rightarrow$ [@block:test1]
+* テキストが複数行に渡る場合
+* captionがlabelの文字列になる
+
+```{python label="test1"}
+teststr2 = 'mogemoge'
+print(teststr1)
+print(teststr2)
+```
+
+\clearpage
+
+## caption付き
+
+* コードと結果にそれぞれタイトルが付く
+
+```{python caption="テスト 2"}
+print(teststr1)
+print(teststr2)
+```
+
+## 全部付き
+
+* コードへの参照 $\rightarrow$ [@code:test3]
+* 結果への参照 $\rightarrow$ [@block:test3]
+
+```{python label="test3", caption="テスト 3"}
+print(teststr1)
+print(teststr2)
+```
+
+\clearpage
+
+# 画像出力：name,label,captionテスト
+
+## 画像出力のみ
+
+* 画像のファイル名は自動生成される
+
+```{python}
+from sklearn import datasets
+iris = datasets.load_iris()
+iris_data = pd.DataFrame(iris.data, columns=iris.feature_names)
+iris_data.plot(kind='scatter', x='sepal length (cm)', y='sepal width (cm)')
+```
+
+\clearpage
+
+## name付き
+
+* 画像のファイル名が指定したものになる
+
+```{Python name4}
+iris_data.plot(kind='scatter', x='sepal length (cm)', y='sepal width (cm)')
+```
+
+\clearpage
+
+## label付き
+
+* コードへの参照 $\rightarrow$ [@code:test5]
+* 画像への参照 $\rightarrow$ [@fig:test5]
+* nameが設定されていなく、labelが設定されている場合は、labelの値がnameになる
+
+```{python label="test5"}
+iris_data.plot(kind='scatter', x='sepal length (cm)', y='sepal width (cm)')
+```
+
+\clearpage
+
+## caption付き
+
+* コードと画像に同じタイトルが付く
+
+```{python caption="テスト 6"}
+iris_data.plot(kind='scatter', x='sepal length (cm)', y='sepal width (cm)')
+```
+
+\clearpage
+
+## 全部付き
+
+* コードへの参照 $\rightarrow$ [@code:test7]
+* 画像への参照 $\rightarrow$ [@fig:test7]
+
+```{python name="name7", label="test7", caption="テスト 7"}
+iris_data.plot(kind='scatter', x='sepal length (cm)', y='sepal width (cm)')
+```
+
+\clearpage
+
+## 複数の画像
+
+* コードへの参照 $\rightarrow$ [@code:test8]
+* 画像への参照（ひとつめ） $\rightarrow$ [@fig:test8_1]
+* 画像への参照（ふたつめ） $\rightarrow$ [@fig:test8_2]
+* 画像のキャプション・ファイル名・ラベルが画像毎に自動生成
+
+```{python name="name8", label="test8", caption="テスト 8"}
+iris_data.plot(kind='scatter', x='sepal length (cm)', y='sepal width (cm)')
+iris_data.plot(kind='scatter', x='petal length (cm)', y='petal width (cm)')
+```
+
+\clearpage
+
+# テーブル出力：label,captionテスト
+
+## テーブル出力のみ
+
+* pandas.DataFrameがtext/htmlで出力されるので、それを変換している
+* 他にもtext/htmlで出力されるものがあると、混同してしまう
+
+```{python}
+iris_data.head(n=3)
+```
+
+## label付き
+
+* labelがあってcaptionが無い場合、参照の都合からlabelをキャプションとする
+* コードへの参照 $\rightarrow$ [@code:test9]
+* テーブルへの参照 $\rightarrow$ [@tbl:test9]
+
+```{python label="test9"}
+iris_data.head(n=3)
+```
+
+\clearpage
+
+## caption付き
+
+* コードとテーブルに同じタイトルが付く
+
+```{python caption="テスト 10"}
+iris_data.head(n=3)
+```
+
+## 全部付き
+
+* コードへの参照 $\rightarrow$ [@code:test11]
+* 画像への参照 $\rightarrow$ [@tbl:test11]
+
+```{python label="test11", caption="テスト 11"}
+iris_data.head(n=3)
+```
+
+\clearpage
+
+# 外部ファイル読み込み：label, captionテスト
+
+## 単純に読み込む
+
+* 外部ファイルが読み込まれ、コードとして表示される
+* 実行もされる
+* キャプションが指定されない場合、ファイル名がキャプションになる
+* ラベルが指定されない場合、ファイル名がラベルになる
+* コードへの参照 $\rightarrow$ [@code:include.py]
+* 画像への参照（ひとつめ） $\rightarrow$ [@fig:include.py]
+
+```{python source="include.py"}
+```
+
+\clearpage
+
+## caption付き、コード追加
+
+* sourceを指定した上でコードを追加すると、外部ファイルの後に追加される
+* コードへの参照 $\rightarrow$ [@code:test12]
+* 画像への参照（ひとつめ） $\rightarrow$ [@fig:test12_1]
+* 画像への参照（ふたつめ） $\rightarrow$ [@fig:test12_2]
+
+```{python name="name12", label="test12", caption="テスト 12", source="include.py"}
+iris_data.plot(kind='scatter', x='sepal width (cm)', y='petal width (cm)')
+```
+
+\clearpage
+
+# evaluateテスト
+
+* evaluateをFalseに設定すると、コードを表示だけされて、実行はされない
+
+```{python evaluate=False}
+teststr1 = "mogemoge"
+print(teststr1)
+```
+
+* 元々teststr1には"hogehoge"という文字列を代入していたので、下の結果は"hogehoge"になる
+
+```{python}
+print(teststr1)
+```
+
+\clearpage
+
+# エラーテスト
+
+* pythonの実行がエラーになると、そこでJupyterの実行はストップする
+* エラーメッセージはalertblockで表示する
+
+```{python}
+# time パッケージをimportしていないのでエラー
+time.sleep(1)
+```
+
+* 以下のコードは（evaluateをFalseにしていないが）実行されない
+
+```{python}
+print(teststr1)
+```
